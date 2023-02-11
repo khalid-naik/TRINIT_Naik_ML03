@@ -33,7 +33,8 @@
 				data: $(this).serialize(),
 				success: function(response) {
 					if ('prediction' in response) {
-						$('#result').text('Predicted output: ' + response['prediction']);
+						// $('#result').text('Predicted output: ' +<p style="color:red;"> response['prediction']);
+						$('#result').html('<p style="color: red;">Predicted output   :   ' + response['prediction'] + '</p>');
 					} else if ('error' in response) {
 						$('#result').text('Error: ' + response['error']);
 					}
