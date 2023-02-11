@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,7 +6,75 @@
 	<title>Enter the parameters...</title>
 </head>
 <body>
-	<form id="input-form" method="POST">
+
+	<form id="input-form" method="POST" action="{% url 'predict' %}">
+		{% csrf_token %}
+		<div class="form-group">
+			<label for="district">Enter district name:</label>
+			<input type="text" class="form-control" id="district" name="district" required>
+			<label for="month">Enter the month:</label>
+			<input type="text" class="form-control" id="month" name="month" required>
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+	
+	<div id="result">
+		<!-- Predicted output will be displayed here -->
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+	$(document).ready(function() {
+		$('#input-form').on('submit', function(event) {
+			event.preventDefault();
+			$.ajax({
+				url: '/predict/',
+				method: 'POST',
+				data: $(this).serialize(),
+				success: function(response) {
+					if ('prediction' in response) {
+						$('#result').text('Predicted output: ' + response['prediction']);
+					} else if ('error' in response) {
+						$('#result').text('Error: ' + response['error']);
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('AJAX error:', error);
+				}
+			});
+		});
+	});
+	</script>
+	
+
+	<!-- ===================modification=============================== -->
+	<!-- <form id = input-form method="POST">
+		{% csrf_token %}
+		<div class="form-group">
+			<label for="district">Enter district name:</label>
+			<input type="text" class="form-control" id="district" name="district" required>
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form> -->
+
+
+
+
+
+
+
+	<!-- <form id="input-form" method="POST" action="{% url 'predict' %}">
+		{% csrf_token %}
+		<div class="form-group">
+			<label for="district">Enter district name:</label>
+			<input type="text" class="form-control" id="district" name="district" required>
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form> -->
+	
+	<!-- =====================modification=================================== -->
+	
+	<!-- <form id="input-form" method="POST">
 		{% csrf_token %}
 		<label for="N">N:</label>
 		<input type="text" id="N" name="N" required><br><br>
@@ -22,33 +91,13 @@
 		<label for="rainfall">Rainfall:</label>
 		<input type="text" id="rainfall" name="rainfall" required><br><br>
 		<button type="submit">Submit</button>
-	</form>
+	</form> -->
 
-	<div id="result">
+	<!-- <div id="result"> -->
 		<!-- Result will be displayed here -->
-	</div>
+	<!-- </div> -->
 
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
-		$(function() {
-			// Intercept form submission
-			$('#input-form').submit(function(e) {
-				e.preventDefault();
-				$.ajax({
-					url: '{% url "predict" %}',
-					method: 'POST',
-					data: $(this).serialize(),
-					success: function(response) {
-						// Display the result
-						$('#result').html('<p>The most suitable crop to grow is : ' + response.prediction + '</p>');
-					},
-					error: function(xhr, status, error) {
-						// Display an error message
-						$('#result').html('<p style="color: red; font-weight: bold;">Error: ' + error + '</p>');
-					}
-				});
-			});
-		});
-	</script>
+	
 </body>
 </html>
+
