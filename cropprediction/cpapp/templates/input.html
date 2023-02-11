@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Enter the parameters...</title>
+</head>
+<body>
+	<form id="input-form" method="POST">
+		{% csrf_token %}
+		<label for="N">N:</label>
+		<input type="text" id="N" name="N" required><br><br>
+		<label for="P">P:</label>
+		<input type="text" id="P" name="P" required><br><br>
+		<label for="K">K:</label>
+		<input type="text" id="K" name="K" required><br><br>
+		<label for="temperature">Temperature:</label>
+		<input type="text" id="temperature" name="temperature" required><br><br>
+		<label for="humidity">Humidity:</label>
+		<input type="text" id="humidity" name="humidity" required><br><br>
+		<label for="ph">pH:</label>
+		<input type="text" id="ph" name="ph" required><br><br>
+		<label for="rainfall">Rainfall:</label>
+		<input type="text" id="rainfall" name="rainfall" required><br><br>
+		<button type="submit">Submit</button>
+	</form>
+
+	<div id="result">
+		<!-- Result will be displayed here -->
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(function() {
+			// Intercept form submission
+			$('#input-form').submit(function(e) {
+				e.preventDefault();
+				$.ajax({
+					url: '{% url "predict" %}',
+					method: 'POST',
+					data: $(this).serialize(),
+					success: function(response) {
+						// Display the result
+						$('#result').html('<p>The most suitable crop to grow is : ' + response.prediction + '</p>');
+					},
+					error: function(xhr, status, error) {
+						// Display an error message
+						$('#result').html('<p style="color: red; font-weight: bold;">Error: ' + error + '</p>');
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>
